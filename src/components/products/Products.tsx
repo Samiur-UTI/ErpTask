@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useSubscription } from "@apollo/client";
 import { Space, Spin, Table } from "antd";
 import Statistic from "antd/es/statistic/Statistic";
 import React from "react";
@@ -11,6 +11,17 @@ const productsQuery = gql`
       description
       price
       stock
+    }
+  }
+`;
+const totalValueSubscription = gql`
+  subscription TotalValueSubscription {
+    products_aggregate {
+      aggregate {
+        sum {
+          price
+        }
+      }
     }
   }
 `;
@@ -38,26 +49,35 @@ const columns = [
   }
 ];
 
+
 export function Products(): JSX.Element {
   const { data, loading, error } = useQuery(productsQuery);
+  const { data: totalValueData, loading: totalValueLoading, error: totalValueError } = useSubscription(totalValueSubscription);
 
-  if (loading) {
+  if (loading || totalValueLoading) {
     return (
       <Space size="middle">
         <Spin />
       </Space>
     );
   }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  
+  if (error || totalValueError) {
+    return <div>Error: {(error?.message || totalValueError?.message)}</div>;
   }
-
-  const products = data.products;
+  
+  const products = data?.products;
+  const totalValue = totalValueData?.products_aggregate?.aggregate?.sum?.price;
+  
+  if (!products || totalValue === undefined) {
+    return <div>Loading...</div>;
+  }
+  
 
   return (
     <div className="table-container">
       <h2 className="table-header">Product List</h2>
+      <p>Total value of the products: <Statistic value={totalValue} precision={2} /></p>
       <Table columns={columns} dataSource={products}/>
     </div>
   );

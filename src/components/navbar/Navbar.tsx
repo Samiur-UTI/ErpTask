@@ -1,61 +1,30 @@
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import { FileAddOutlined, HomeOutlined } from '@ant-design/icons';
 import { Menu, MenuProps } from 'antd';
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 type Props = {}
 
 const items: MenuProps['items'] = [
     {
-      label: 'Navigation One',
+      label: 'Home',
       key: 'mail',
-      icon: <MailOutlined />,
+      icon: <HomeOutlined />,
     },
     {
-      label: 'Navigation Three - Submenu',
-      key: 'SubMenu',
-      icon: <SettingOutlined />,
-      children: [
-        {
-          type: 'group',
-          label: 'Item 1',
-          children: [
-            {
-              label: 'Option 1',
-              key: 'setting:1',
-            },
-            {
-              label: 'Option 2',
-              key: 'setting:2',
-            },
-          ],
-        },
-        {
-          type: 'group',
-          label: 'Item 2',
-          children: [
-            {
-              label: 'Option 3',
-              key: 'setting:3',
-            },
-            {
-              label: 'Option 4',
-              key: 'setting:4',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: (
-        <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-          Navigation Four - Link
-        </a>
-      ),
+      label: "Add Product",
       key: 'alipay',
     },
   ];
 
 // eslint-disable-next-line no-empty-pattern
 export default function Navbar({}: Props) {
-    return <Menu mode="horizontal" items={items} />
+    return (<Menu style={{display:"flex", justifyContent:"flexStart"}} mode="horizontal">
+    <Menu.Item key="home" icon={<HomeOutlined />}>
+        <Link to="/">Home</Link>
+    </Menu.Item>
+    <Menu.Item key="add-product" icon={<FileAddOutlined />}>
+        <Link to="/add-product">Add Product</Link>
+    </Menu.Item>
+</Menu>)
 }
