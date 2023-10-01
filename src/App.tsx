@@ -5,7 +5,8 @@ import { Layout, Typography } from 'antd';
 
 
 import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
-import { Products } from './Products';
+import { Products } from './components/products/Products';
+import Navbar from './components/navbar/Navbar';
 
 
 const { Header, Content } = Layout;
@@ -28,9 +29,10 @@ function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <Layout style={{ height: '100vh' }}>
-          <Header style={{ display: 'flex', alignItems: 'center'}}>
+          {/* <Header style={{ display: 'flex', alignItems: 'center'}}>
             <Title style={{ color: 'white', margin: 0, textAlign: 'left' }}>Inventory App</Title>
-          </Header>
+          </Header> */}
+          <Navbar/>
           <Content style={{ padding: '1em'}}>
             <Products />
           </Content>
