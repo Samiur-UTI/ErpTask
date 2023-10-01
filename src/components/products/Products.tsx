@@ -2,29 +2,9 @@ import { gql, useQuery, useSubscription } from "@apollo/client";
 import { Space, Spin, Table } from "antd";
 import Statistic from "antd/es/statistic/Statistic";
 import React from "react";
-
-const productsQuery = gql`
-  query ProductsQuery {
-    products {
-      id
-      name
-      description
-      price
-      stock
-    }
-  }
-`;
-const totalValueSubscription = gql`
-  subscription TotalValueSubscription {
-    products_aggregate {
-      aggregate {
-        sum {
-          price
-        }
-      }
-    }
-  }
-`;
+import { Product } from "../../schema/Product";
+import { productsQuery } from "../../graphql/queries/getProducts";
+import { totalValueSubscription } from "../../graphql/subscription/totalValueOfProducts";
 
 const columns = [
   {
@@ -66,7 +46,7 @@ export function Products(): JSX.Element {
     return <div>Error: {(error?.message || totalValueError?.message)}</div>;
   }
   
-  const products = data?.products;
+  const products = data?.products as Product[];
   const totalValue = totalValueData?.products_aggregate?.aggregate?.sum?.price;
   
   if (!products || totalValue === undefined) {

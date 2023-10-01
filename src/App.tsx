@@ -17,8 +17,7 @@ import { Products } from "./components/products/Products";
 import Navbar from "./components/navbar/Navbar";
 import AddProduct from "./components/add-product/AddProduct";
 
-const { Header, Content } = Layout;
-const { Title } = Typography;
+const { Content } = Layout;
 
 const createApolloClient = () => {
   const httpLink = new HttpLink({
@@ -32,7 +31,7 @@ const createApolloClient = () => {
     },
   });
 
-  // Create a terminating link that switches between HTTP and WebSocket based on the operation type
+  // A terminating link so that it can switch between HTTP and WebSocket based on the operation type
   const link = split(
     ({ query }) => {
       const definition = getMainDefinition(query);
@@ -46,11 +45,11 @@ const createApolloClient = () => {
   );
 
   const authMiddleware = new ApolloLink((operation, forward) => {
-    // Add any authentication logic here if needed
+    // Auth logic can be added if needed here
     return forward(operation);
   });
 
-  // Use 'from' to apply multiple middlewares if needed
+  // If multiple middlewares are required 'from' can be used to apply them accordingly
   const client = new ApolloClient({
     link: from([authMiddleware, link]),
     cache: new InMemoryCache(),
