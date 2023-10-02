@@ -1,38 +1,46 @@
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { Space, Spin, Table } from "antd";
 import Statistic from "antd/es/statistic/Statistic";
-import React from "react";
+import React, { useEffect } from "react";
 import { Product } from "../../schema/Product";
 import { productsQuery } from "../../graphql/queries/getProducts";
 import { totalValueSubscription } from "../../graphql/subscription/totalValueOfProducts";
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    title: 'Description',
-    dataIndex: 'description',
-    key: 'description',
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
   },
   {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
+    title: "Price",
+    dataIndex: "price",
+    key: "price",
   },
   {
-    title:"Stock",
-    dataIndex:'stock',
-    key:'stock'
-  }
+    title: "Stock",
+    dataIndex: "stock",
+    key: "stock",
+  },
 ];
 
-
 export function Products(): JSX.Element {
-  const { data, loading, error } = useQuery(productsQuery);
-  const { data: totalValueData, loading: totalValueLoading, error: totalValueError } = useSubscription(totalValueSubscription);
+  const { data, loading, error, refetch } = useQuery(productsQuery);
+  const {
+    data: totalValueData,
+    loading: totalValueLoading,
+    error: totalValueError,
+  } = useSubscription(totalValueSubscription);
+
+  useEffect(() => {
+    // Refetch products query whenever the component mounts or when it becomes active
+    refetch();
+  }, []);
 
   if (loading || totalValueLoading) {
     return (
@@ -41,24 +49,26 @@ export function Products(): JSX.Element {
       </Space>
     );
   }
-  
+
   if (error || totalValueError) {
-    return <div>Error: {(error?.message || totalValueError?.message)}</div>;
+    return <div>Error: {error?.message || totalValueError?.message}</div>;
   }
-  
+
   const products = data?.products as Product[];
   const totalValue = totalValueData?.products_aggregate?.aggregate?.sum?.price;
-  
+
   if (!products || totalValue === undefined) {
     return <div>Loading...</div>;
   }
-  
 
   return (
     <div className="table-container">
       <h2 className="table-header">Product List</h2>
-      <p>Total value of the products: <Statistic value={totalValue} precision={2} /></p>
-      <Table columns={columns} dataSource={products}/>
+      <p>
+        Total value of the products:{" "}
+        <Statistic value={totalValue} precision={2} />
+      </p>
+      <Table columns={columns} dataSource={products} />
     </div>
   );
 }

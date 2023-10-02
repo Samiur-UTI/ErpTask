@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useMutation } from '@apollo/client';
-import { CREATE_PRODUCT_MUTATION } from '../../graphql/queries/createProduct';
+import { CREATE_PRODUCT_MUTATION } from '../../graphql/mutations/createProduct';
 
 type Props = {};
 
